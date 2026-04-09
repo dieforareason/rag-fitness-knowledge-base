@@ -11,6 +11,46 @@ This project is built using an entirely local, production-ready stack:
 - **Local LLM Integration**: [LM Studio](https://lmstudio.ai/) served via an OpenAI-compatible REST API.
 - **Web UI**: Flask with vanilla HTML/CSS for an ultra-premium glassmorphic aesthetic.
 
+## High-Level Process Flow
+
+### 📥 Ingestion Pipeline
+```mermaid
+flowchart TD
+    A([🗂️ PDF Documents\ndata/pdfs/]) --> B[PDF Parser\nunstructured]
+    B --> C[Semantic Chunking\nchunk_by_title]
+    C --> D[Text Chunks\n+ Metadata]
+    D --> E[Embedding Model\nall-MiniLM-L6-v2]
+    E --> F[(Qdrant\nVector DB)]
+
+    style A fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style B fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style C fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style D fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style E fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style F fill:#312e81,stroke:#818cf8,color:#e2e8f0
+```
+
+### 🔍 Query Pipeline
+```mermaid
+flowchart TD
+    Q([👤 User Question]) --> QE[Embedding Model\nall-MiniLM-L6-v2]
+    QE --> QV[Query Vector]
+    QV --> VS[(Qdrant\nVector DB)]
+    VS -->|Top-K Similar Chunks| CTX[Relevant Context]
+    CTX --> P[Prompt Builder\nprompt.json]
+    P --> LLM[Local LLM\nLM Studio / Qwen]
+    LLM --> ANS([💬 Generated Answer])
+
+    style Q fill:#1e293b,stroke:#10b981,color:#e2e8f0
+    style QE fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style QV fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style VS fill:#312e81,stroke:#818cf8,color:#e2e8f0
+    style CTX fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style P fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style LLM fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style ANS fill:#1e293b,stroke:#10b981,color:#e2e8f0
+```
+
 ## Repository Structure
 
 ```
