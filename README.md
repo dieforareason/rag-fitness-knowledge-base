@@ -40,7 +40,7 @@ flowchart TD
     QV --> VS[(Qdrant\nVector DB\nlocalhost:6333)]
     VS -->|Top-K Similar Chunks| CTX[Relevant Context]
     CTX --> P[Prompt Builder\nprompt.json]
-    P -->|OpenAI-compatible REST API\n172.24.112.1:1234/v1| LMSTUDIO
+    P -->|OpenAI-compatible REST API\nlocalhost:1234/v1| LMSTUDIO
     subgraph LMSTUDIO ["🖥️ LM Studio  •  Windows Host"]
         direction TB
         SERVER[Local Server\napi_key: lm-studio] --> MODEL[Qwen 3.5 4B]
