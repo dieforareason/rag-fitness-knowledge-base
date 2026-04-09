@@ -33,21 +33,30 @@ flowchart TD
 ### 🔍 Query Pipeline
 ```mermaid
 flowchart TD
+    WEB([🌐 Web UI\nFlask :5000]) --> Q
+    CLI([💻 CLI\napp.py]) --> Q
     Q([👤 User Question]) --> QE[Embedding Model\nall-MiniLM-L6-v2]
     QE --> QV[Query Vector]
-    QV --> VS[(Qdrant\nVector DB)]
+    QV --> VS[(Qdrant\nVector DB\nlocalhost:6333)]
     VS -->|Top-K Similar Chunks| CTX[Relevant Context]
     CTX --> P[Prompt Builder\nprompt.json]
-    P --> LLM[Local LLM\nLM Studio / Qwen]
-    LLM --> ANS([💬 Generated Answer])
+    P -->|OpenAI-compatible REST API\n172.24.112.1:1234/v1| LMSTUDIO
+    subgraph LMSTUDIO ["🖥️ LM Studio  •  Windows Host"]
+        direction TB
+        SERVER[Local Server\napi_key: lm-studio] --> MODEL[Qwen 3.5 4B]
+    end
+    LMSTUDIO --> ANS([💬 Generated Answer])
 
+    style WEB fill:#1e293b,stroke:#10b981,color:#e2e8f0
+    style CLI fill:#1e293b,stroke:#10b981,color:#e2e8f0
     style Q fill:#1e293b,stroke:#10b981,color:#e2e8f0
     style QE fill:#1e293b,stroke:#6366f1,color:#e2e8f0
     style QV fill:#1e293b,stroke:#6366f1,color:#e2e8f0
     style VS fill:#312e81,stroke:#818cf8,color:#e2e8f0
     style CTX fill:#1e293b,stroke:#6366f1,color:#e2e8f0
     style P fill:#1e293b,stroke:#6366f1,color:#e2e8f0
-    style LLM fill:#1e293b,stroke:#6366f1,color:#e2e8f0
+    style SERVER fill:#1e293b,stroke:#f59e0b,color:#e2e8f0
+    style MODEL fill:#1e293b,stroke:#f59e0b,color:#e2e8f0
     style ANS fill:#1e293b,stroke:#10b981,color:#e2e8f0
 ```
 
